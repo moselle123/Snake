@@ -9,6 +9,13 @@
             "name": "Launch Snake",
             "request": "launch",
             "mainClass": "Snake",
+            "projectName": "Snake_acdcbbf2"
+        },
+        {
+            "type": "java",
+            "name": "Launch Snake",
+            "request": "launch",
+            "mainClass": "Snake",
             "projectName": "Snake_8a928c4e"
         },
         {

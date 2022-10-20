@@ -26,6 +26,9 @@ public class Game extends JPanel implements ActionListener{
     Action downAction;
     Action leftAction;
     Action rightAction;
+    // for menu
+    Action startAction;
+    Action exitAction;
 
     boolean gameOver = false;
     Timer timer;
@@ -34,6 +37,10 @@ public class Game extends JPanel implements ActionListener{
     int yVelocity = 0;
     int x = SIZE;
     int y = SIZE;
+
+    // for menu
+    int a = 0;
+    boolean play = false;
 
     Game(){
 
@@ -47,6 +54,8 @@ public class Game extends JPanel implements ActionListener{
         downAction = new DownAction();
         leftAction = new RightAction();
         rightAction = new LeftAction();
+        startAction = new startAction();
+        exitAction = new exitAction();
 
         this.getInputMap().put(KeyStroke.getKeyStroke("UP"), "upAction");
         this.getActionMap().put("upAction", upAction);
@@ -56,6 +65,10 @@ public class Game extends JPanel implements ActionListener{
         this.getActionMap().put("rightAction", rightAction);
         this.getInputMap().put(KeyStroke.getKeyStroke("LEFT"), "leftAction");
         this.getActionMap().put("leftAction", leftAction);
+        this.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "startAction");
+        this.getActionMap().put("startAction", startAction);
+        this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "exitAction");
+        this.getActionMap().put("exitAction", exitAction);
 
         xSnake.add(x);
         ySnake.add(y);
@@ -71,7 +84,35 @@ public class Game extends JPanel implements ActionListener{
         
         super.paint(g);
         Graphics2D g2D = (Graphics2D) g;
-        redraw(g2D);
+        if(play == true){
+            redraw(g2D);
+        }
+        else{
+            menu(g2D);
+        }
+    }
+
+    public void menu(Graphics2D g){
+
+        g.setBackground(Color.BLACK);
+        g.setColor(Color.GREEN);
+        g.setFont(new Font("SansSerif", Font.BOLD, 125));
+        g.drawString("SNAKE", 75, 250);
+        g.setFont(new Font("SansSerif", Font.BOLD, 30));
+        g.fillRect(a, 325, SIZE, SIZE);
+        g.setColor(new Color(175, 227, 41));
+        g.drawString("PRESS ENTER TO PLAY", 75, 450);
+        g.drawString("PRESS ESC TO EXIT", 75, 520);
+        g.fillRect(a - SIZE, 325, SIZE, SIZE);
+        g.fillRect(a - SIZE * 2, 325, SIZE, SIZE);
+        g.fillRect(a - SIZE * 3, 325, SIZE, SIZE);
+
+        if (a <= PANEL_WIDTH){
+            a += SIZE;
+        }
+        else{
+            a = 0;
+        }
     }
 
     public void redraw(Graphics2D g){
@@ -201,6 +242,22 @@ public class Game extends JPanel implements ActionListener{
                 direction = "right";
             }        
         }      
+    }
+
+    public class exitAction extends AbstractAction{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.exit(0);
+        }
+    }
+
+    public class startAction extends AbstractAction{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            play = true;
+        }
     }
 
     public boolean overEdge(){ //STOPS SNAKE FROM MOVING IF ITS PARTLY OFF SCREEN
