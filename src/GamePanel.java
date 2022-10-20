@@ -13,5 +13,6 @@ public class GamePanel extends JFrame{
         this.pack();
 
         this.setVisible(true);
+        
     }
 }

@@ -32,15 +32,15 @@ public class Game extends JPanel implements ActionListener{
 
     boolean gameOver = false;
     Timer timer;
-    int delay = 2;
-    int xVelocity = SIZE;
-    int yVelocity = 0;
-    int x = SIZE;
-    int y = SIZE;
+    int xVelocity;
+    int yVelocity;
+    int x;
+    int y;
 
     // for menu
     int a = 0;
     boolean play = false;
+    boolean playAgain = false;
 
     Game(){
 
@@ -70,12 +70,7 @@ public class Game extends JPanel implements ActionListener{
         this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "exitAction");
         this.getActionMap().put("exitAction", exitAction);
 
-        xSnake.add(x);
-        ySnake.add(y);
-        xSnake.add(x-SIZE);
-        ySnake.add(y);
-        xSnake.add(x-2*SIZE);
-        ySnake.add(y);
+        initialiseSnake();
 
         timer.start();
     }
@@ -84,6 +79,11 @@ public class Game extends JPanel implements ActionListener{
         
         super.paint(g);
         Graphics2D g2D = (Graphics2D) g;
+        if(gameOver && playAgain){
+            gameOver = false;
+            playAgain = false;
+            initialiseSnake();
+        }
         if(play == true){
             redraw(g2D);
         }
@@ -116,7 +116,10 @@ public class Game extends JPanel implements ActionListener{
     }
 
     public void redraw(Graphics2D g){
-        
+
+        g.setFont(new Font("SansSerif", Font.BOLD, 20));
+        String string = "SCORE: " + score;
+        g.drawString(string, 260, 20);
         //Apple
         g.setColor(Color.red);
         g.fillOval(appleCoordinateX , appleCoordinateY ,SIZE, SIZE);
@@ -157,10 +160,19 @@ public class Game extends JPanel implements ActionListener{
         xSnake.set(0, x);
         ySnake.set(0, y);
 
-        // Check if snake head overlaps body then stops running the game:
+        // Check if snake head overlaps body then stops running the game and show game over screen:
         snakeOverlap(); 
         if (gameOver){
-            timer.stop();
+            g.setColor(Color.BLACK);
+            g.setFont(new Font("SansSerif", Font.BOLD, 125));
+            g.drawString("GAME", 10, 250);
+            g.drawString("OVER", 200, 350);
+            g.setFont(new Font("SansSerif", Font.BOLD, 30));
+            g.drawString("PRESS ENTER TO PLAY AGAIN", 75, 450);
+            g.drawString("PRESS ESC TO EXIT", 75, 520);
+            xVelocity = 0;
+            yVelocity = 0;
+            playAgain = false;
         }
     }
     
@@ -191,6 +203,7 @@ public class Game extends JPanel implements ActionListener{
             score ++;
             grow();
         }
+
         x += xVelocity;
         y += yVelocity;
         repaint();
@@ -257,6 +270,7 @@ public class Game extends JPanel implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
             play = true;
+            playAgain = true;
         }
     }
 
@@ -306,5 +320,21 @@ public class Game extends JPanel implements ActionListener{
                 gameOver = true;
             }
         }
+    }
+
+    public void initialiseSnake(){
+        xSnake.clear();
+        ySnake.clear();
+        xVelocity = SIZE;
+        yVelocity = 0;
+        x = SIZE;
+        y = SIZE;
+        xSnake.add(x);
+        ySnake.add(y);
+        xSnake.add(x-SIZE);
+        ySnake.add(y);
+        xSnake.add(x-2*SIZE);
+        ySnake.add(y);
+        score = 0;
     }
 }
